@@ -300,7 +300,7 @@ Socket.prototype.send = function (buffer, offset, length, port, address, callbac
 }
 
 function sliceBuffer (buffer, offset, length) {
-  if (typeof buffer === 'string') {
+  if (typeof buffer === 'string' || buffer instanceof Uint8Array) {
     buffer = Buffer.from(buffer)
   } else if (!(buffer instanceof Buffer)) {
     throw new TypeError('First argument must be a buffer or string')
@@ -397,7 +397,11 @@ Socket.prototype.setTTL = function (ttl) {
  */
 Socket.prototype.setMulticastTTL = function (ttl, callback) {
   var self = this
-  if (!callback) callback = function () {}
+  if (!callback) callback = function () {
+    if (chrome.runtime.lastError) {
+      console.log("lastError:", chrome.runtime.lastError.message)
+    }
+  }
   if (self._bindState === BIND_STATE_BOUND) {
     setMulticastTTL(callback)
   } else {
@@ -425,7 +429,11 @@ Socket.prototype.setMulticastTTL = function (ttl, callback) {
  */
 Socket.prototype.setMulticastLoopback = function (flag, callback) {
   var self = this
-  if (!callback) callback = function () {}
+  if (!callback) callback = function () {
+    if (chrome.runtime.lastError) {
+      console.log("lastError:", chrome.runtime.lastError.message)
+    }
+  }
   if (self._bindState === BIND_STATE_BOUND) {
     setMulticastLoopback(callback)
   } else {
